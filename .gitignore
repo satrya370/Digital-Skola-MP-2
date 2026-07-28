@@ -1,0 +1,4 @@
+articles.db
+server.log
+server-error.log
+__pycache__/
