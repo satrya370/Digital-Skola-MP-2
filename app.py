@@ -4,6 +4,7 @@ import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
+from db import article_totals as db_article_totals
 from db import connect, seed_db
 
 
@@ -55,16 +56,8 @@ def query_articles(params: dict[str, list[str]]) -> list[dict[str, object]]:
 
 
 def article_totals() -> dict[str, int]:
-    with connect() as connection:
-        total = connection.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
-        rows = connection.execute(
-            "SELECT source, COUNT(*) AS amount FROM articles GROUP BY source ORDER BY source"
-        ).fetchall()
-    result = {"jumlah_artikel": total}
-    for row in rows:
-        key = "artikel_" + "_".join(row["source"].lower().split())
-        result[key] = row["amount"]
-    return result
+    """Compatibility wrapper around the database totals command."""
+    return db_article_totals()
 
 
 class ArticleHandler(BaseHTTPRequestHandler):

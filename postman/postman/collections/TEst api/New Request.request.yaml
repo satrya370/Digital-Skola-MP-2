@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/articles"
+method: GET
+order: 1788420211987

@@ -61,6 +61,22 @@ def seed_db() -> int:
         return len(SEED_ARTICLES)
 
 
+def article_totals() -> dict[str, int]:
+    """Return the total number of articles and a total for each source."""
+    with connect() as connection:
+        total = connection.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
+        rows = connection.execute(
+            "SELECT source, COUNT(*) AS amount FROM articles GROUP BY source ORDER BY source"
+        ).fetchall()
+
+    result = {"jumlah_artikel": total}
+    for row in rows:
+        key = "artikel_" + "_".join(row["source"].lower().split())
+        result[key] = row["amount"]
+    return result
+
+
 if __name__ == "__main__":
     print(f"Database ready: {DB_PATH}")
     print(f"Articles available: {seed_db()}")
+    print(f"Article totals: {article_totals()}")
